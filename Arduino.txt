@@ -1,0 +1,83 @@
+// Definición de pines
+const int ledVerde = 11;
+const int ledRojo = 12;
+const int ledAmarillo = 13;
+
+// Función para encender o apagar un LED
+void controlarLed(int pin, bool estado) {
+  digitalWrite(pin, estado ? HIGH : LOW);
+}
+
+// Función para encender todos los LEDs
+void controlarTodosLosLeds(bool estado) {
+  controlarLed(ledVerde, estado);
+  controlarLed(ledRojo, estado);
+  controlarLed(ledAmarillo, estado);
+}
+
+// Configuración inicial
+void setup() {
+  // Configurar los pines como salida
+  pinMode(ledVerde, OUTPUT);
+  pinMode(ledRojo, OUTPUT);
+  pinMode(ledAmarillo, OUTPUT);
+
+  // Iniciar la comunicación serial
+  Serial.begin(9600);
+  Serial.println("Control de LEDs. Ingrese un número del 1 al 9:");
+}
+
+void loop() {
+  // Verifica si hay datos disponibles en el monitor serial
+  if (Serial.available() > 0) {
+    char entrada = Serial.read();  // Leer el caracter ingresado
+
+    switch (entrada) {
+      case '1':  // Encender LED verde
+        controlarLed(ledVerde, true);
+        Serial.println("LED verde encendido");
+        break;
+      case '2':  // Apagar LED verde
+        controlarLed(ledVerde, false);
+        Serial.println("LED verde apagado");
+        break;
+      case '3':  // Encender LED rojo
+        controlarLed(ledRojo, true);
+        Serial.println("LED rojo encendido");
+        break;
+      case '4':  // Apagar LED rojo
+        controlarLed(ledRojo, false);
+        Serial.println("LED rojo apagado");
+        break;
+      case '5':  // Encender LED amarillo
+        controlarLed(ledAmarillo, true);
+        Serial.println("LED amarillo encendido");
+        break;
+      case '6':  // Apagar LED amarillo
+        controlarLed(ledAmarillo, false);
+        Serial.println("LED amarillo apagado");
+        break;
+      case '7':  // Encender todos los LEDs
+        controlarTodosLosLeds(true);
+        Serial.println("Todos los LEDs encendidos");
+        break;
+      case '8':  // Apagar todos los LEDs
+        controlarTodosLosLeds(false);
+        Serial.println("Todos los LEDs apagados");
+        break;
+      case '9':  // LEDs en modo intermitente
+        Serial.println("Modo intermitente activado");
+        for (int i = 0; i < 10; i++) {  // 10 veces intermitente
+          controlarTodosLosLeds(true);
+          delay(500);  // Encendidos por 0.5 segundos
+          controlarTodosLosLeds(false);
+          delay(500);  // Apagados por 0.5 segundos
+        }
+        Serial.println("Modo intermitente desactivado");
+        break;
+      default:
+        Serial.println("Comando no reconocido. Ingrese un número del 1 al 9.");
+        break;
+    }
+  }
+}
